@@ -1,8 +1,19 @@
 # si-challenge
 
+##Run Tests
+
+To run tests...
+
+```
+npm install
+npm run test
+```
+
+##Run in Development Mode
+
 To run in development mode you will have to install SAM local. Installation instructions for various platforms can be found here...https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 
-Once you have AWS SAM CLI installed you can run..
+Once you have AWS SAM CLI installed you can run...
 
 ```
 npm install
