@@ -1,0 +1,24 @@
+{
+  "name": "si-challenge",
+  "version": "0.0.1",
+  "description": "an example of a serverless api using AWS Lambda",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tentengola/si-challenge.git"
+  },
+  "author": "Stephen Garrett",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tentengola/si-challenge/issues"
+  },
+  "homepage": "https://github.com/tentengola/si-challenge#readme",
+  "devDependencies": {
+    "aws-sdk": "^2.610.0",
+    "chai": "^4.2.0",
+    "mocha": "^7.0.0",
+    "sinon": "^8.1.1"
+  }
+}
