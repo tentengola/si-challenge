@@ -8,18 +8,26 @@ const response = (statusCode, body, additionalHeaders) => ({
 
 const put = async (deps, event) => {
   try {
-    return response(200, JSON.stringify({message:'Hello'}));
+    const body = JSON.parse(event.body);
+    if(body && body.application && body.operation && body.currentMediaTime) {
+      return response(200, JSON.stringify({message:'Hello'}));
+    } else {
+      return response(400, JSON.stringify({message:'To record an interaction, you must include values for application, operation, and currentMediaTime.'}));
+    }
   } catch(err) {
-    console.log('err', err);
     throw err;
   }
 };
 
 const post = async (deps, event) => {
   try {
-    return response(200, JSON.stringify({message:'Hello'}));
+    const body = JSON.parse(event.body);
+    if(body && body.startDate && body.endDate && body.application) {
+      return response(200, JSON.stringify({message:'Hello'}));
+    } else {
+      return response(400, JSON.stringify({message:'To retrieve interaction counts, you must include values for startDate, endDate, and application.'}));
+    }
   } catch(err) {
-    console.log('err', err);
     throw err;
   }
 };

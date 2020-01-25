@@ -23,6 +23,16 @@ describe('Save an interaction', function() {
     });
     response.statusCode.should.equal(405);
   });
+  it('rejects request without all required parameters', async () => {
+    const response = await handler({
+      httpMethod: 'PUT',
+      body: JSON.stringify({
+      	application: "vLive",
+      	operation: "pause"
+      })
+    });
+    response.statusCode.should.equal(400);
+  });
   it('successfully puts an interaction in the database');
 });
 
@@ -38,6 +48,16 @@ describe('Retrieve interactions', function() {
       httpMethod: 'UPDATE'
     });
     response.statusCode.should.equal(405);
+  });
+  it('rejects request without all required parameters', async () => {
+    const response = await handler({
+      httpMethod: 'POST',
+      body: JSON.stringify({
+        startDate: "2019-01-01",
+        endDate: "2019-01-03"
+      })
+    });
+    response.statusCode.should.equal(400);
   });
   it('successfully returns interactions from the database');
 });
