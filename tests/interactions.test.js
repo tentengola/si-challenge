@@ -11,6 +11,12 @@ const deps = {};
 const handler = methods(deps);
 
 describe('Save an interaction', function() {
+  it('returns a response from enpoint', async () => {
+    let response = await handler({
+      httpMethod: 'PUT'
+    });
+    response.statusCode.should.exist;
+  });
   it('successfully puts an interaction in the database');
 });
 

@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "an example of a serverless api using AWS Lambda",
   "scripts": {
-    "test": "mocha tests/*.test.js"
+    "test": "mocha tests/*.test.js",
+    "start-dev": "sam local start-api --host 172.31.28.5 --port 8080"
   },
   "repository": {
     "type": "git",

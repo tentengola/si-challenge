@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform:
+- AWS::Serverless-2016-10-31
+- AWS::CodeStar
+
+Resources:
+  Post:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: interactions.handler
+      Runtime: nodejs10.x
+      Events:
+        PuttEvent:
+          Type: Api
+          Properties:
+            Path: /interactions
+            Method: put

@@ -6,7 +6,7 @@ const response = (statusCode, body, additionalHeaders) => ({
   headers: { 'Content-Type': 'application/json', ...additionalHeaders },
 });
 
-const get = async (deps, event) => {
+const put = async (deps, event) => {
   try {
     return response(200, JSON.stringify({message:'Hello'}));
   } catch(err) {
@@ -18,11 +18,11 @@ const get = async (deps, event) => {
 exports.methods = deps => async (event, context, callback) => {
   try {
     switch (event.httpMethod) {
-      case 'GET':
-        return await get(deps, event);
+      case 'PUT':
+        return await put(deps, event);
       default: return response(405,
         { Message: `Unsupported method: ${event.httpMethod}` },
-        { Allow: 'GET' });
+        { Allow: 'PUT' });
     }
   } catch(err) {
     return response(500, JSON.stringify({ Error: err.message }));
