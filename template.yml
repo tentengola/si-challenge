@@ -10,8 +10,13 @@ Resources:
       Handler: interactions.handler
       Runtime: nodejs10.x
       Events:
-        PuttEvent:
+        PutEvent:
           Type: Api
           Properties:
             Path: /interactions
             Method: put
+        PostEvent:
+          Type: Api
+          Properties:
+            Path: /interactions
+            Method: post
