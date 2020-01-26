@@ -40,7 +40,7 @@ const put = async (deps, event) => {
       return response(201, { message: 'Created item', item: params.Item });
     }
     else {
-      return response(400, { message: 'To record an interaction, you must include values for application, operation, and currentMediaTime.' });
+      return response(400, { error: 'To record an interaction, you must include values for application, operation, and currentMediaTime.' });
     }
   } catch(err) {
     throw err;
@@ -50,12 +50,46 @@ const put = async (deps, event) => {
 const post = async (deps, event) => {
   try {
     const body = JSON.parse(event.body);
-    if(body && body.startDate && body.endDate && body.application) {
-      return response(200, JSON.stringify({message:'Hello'}));
-    } else {
-      return response(400, JSON.stringify({message:'To retrieve interaction counts, you must include values for startDate, endDate, and application.'}));
+    if (body && body.startDate && body.endDate && body.application) {
+      const startTime = new Date(body.startDate + 'T00:00:00-00:00').getTime();
+      const endTime = new Date(body.endDate + 'T23:59:59-00:00').getTime();
+
+      const params = {
+        TableName: "interactions",
+        KeyConditionExpression: "application = :application AND #time BETWEEN :start AND :end",
+        ExpressionAttributeNames: {
+          '#time': 'time'
+        },
+        ExpressionAttributeValues: {
+          ":application": body.application,
+          ":start": startTime,
+          ":end": endTime
+        }
+      };
+      
+      const queryResponse = await deps.docClient.query(params).promise();
+      
+      const items = queryResponse.Items;
+      
+      let counts = {};
+      
+      for(let i = 0; i < items.length; i++) {
+        
+        if(counts[items[i].date]) {
+          counts[items[i].date] += 1;
+        } else {
+          counts[items[i].date] = 1;
+        }
+        
+      }
+      
+      return response(200, { counts: counts });
     }
-  } catch(err) {
+    else {
+      return response(400, { error: 'To retrieve interaction counts, you must include values for startDate, endDate, and application.' });
+    }
+  }
+  catch (err) {
     throw err;
   }
 };
@@ -72,6 +106,6 @@ exports.methods = deps => async (event, context, callback) => {
         { Allow: 'POST,PUT' });
     }
   } catch(err) {
-    return response(500, JSON.stringify({ Error: err.message }));
+    return response(500, { error: err.message });
   }
 };
