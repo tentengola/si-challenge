@@ -1,0 +1,57 @@
+service: interaction-service
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  environment:
+    INTERACTIONS_TABLE: interactions-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
+
+functions:
+  interactions:
+    handler: interactions.handler
+    events:
+      - http:
+          path: interactions
+          method: put
+          cors: true
+      - http:
+          path: interactions
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    InteractionsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "application"
+            AttributeType: "S"
+          -
+            AttributeName: "time"
+            AttributeType: "N"
+        KeySchema:
+          -
+            AttributeName: "application"
+            KeyType: "HASH"
+          -
+            AttributeName: "time"
+            KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        StreamSpecification:
+          StreamViewType: "NEW_IMAGE"
+        TableName: "interactions"
