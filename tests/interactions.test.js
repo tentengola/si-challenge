@@ -12,7 +12,7 @@ const deps = {
     put: () => {
       return {
         promise: () => {
-          return new Promise( async (resolve, reject) => {
+          return new Promise(async(resolve, reject) => {
             await timeout(500);
             resolve({});
           });
@@ -22,7 +22,7 @@ const deps = {
     query: () => {
       return {
         promise: () => {
-          return new Promise( async (resolve, reject) => {
+          return new Promise(async(resolve, reject) => {
             await timeout(500);
             resolve(queryResponse);
           });
@@ -35,19 +35,19 @@ const deps = {
 const handler = methods(deps);
 
 describe('Save an interaction', function() {
-  it('returns a response from enpoint', async () => {
+  it('returns a response from enpoint', async() => {
     const response = await handler({
       httpMethod: 'PUT'
     });
     response.statusCode.should.exist;
   });
-  it('rejects unsupported methods', async () => {
+  it('rejects unsupported methods', async() => {
     const response = await handler({
       httpMethod: 'UPDATE'
     });
     response.statusCode.should.equal(405);
   });
-  it('rejects request without all required parameters', async () => {
+  it('rejects request without all required parameters', async() => {
     const response = await handler({
       httpMethod: 'PUT',
       requestContext: {
@@ -59,13 +59,13 @@ describe('Save an interaction', function() {
         'User-Agent': 'PostmanRuntime/7.22.0'
       },
       body: JSON.stringify({
-      	application: 'vLive',
-      	operation: 'pause'
+        application: 'vLive',
+        operation: 'pause'
       })
     });
     response.statusCode.should.equal(400);
   });
-  it('successfully puts an interaction in the database', async () => {
+  it('successfully puts an interaction in the database', async() => {
     const response = await handler({
       httpMethod: 'PUT',
       requestContext: {
@@ -77,12 +77,12 @@ describe('Save an interaction', function() {
         'User-Agent': 'PostmanRuntime/7.22.0'
       },
       body: JSON.stringify({
-      	application: 'vLive',
-      	operation: 'pause',
-      	currentMediaTime: 209
+        application: 'vLive',
+        operation: 'pause',
+        currentMediaTime: 209
       })
     });
-    
+
     response.statusCode.should.equal(201);
     response.headers['Content-Type'].should.equal('application/json');
     let item = JSON.parse(response.body).item;
@@ -93,19 +93,19 @@ describe('Save an interaction', function() {
 });
 
 describe('Retrieve interactions', function() {
-  it('returns a response from enpoint', async () => {
+  it('returns a response from enpoint', async() => {
     const response = await handler({
       httpMethod: 'POST'
     });
     response.statusCode.should.exist;
   });
-  it('rejects unsupported methods', async () => {
+  it('rejects unsupported methods', async() => {
     const response = await handler({
       httpMethod: 'UPDATE'
     });
     response.statusCode.should.equal(405);
   });
-  it('rejects request without all required parameters', async () => {
+  it('rejects request without all required parameters', async() => {
     const response = await handler({
       httpMethod: 'POST',
       body: JSON.stringify({
@@ -115,7 +115,7 @@ describe('Retrieve interactions', function() {
     });
     response.statusCode.should.equal(400);
   });
-  it('successfully returns counts from the database', async () => {
+  it('successfully returns counts from the database', async() => {
     const response = await handler({
       httpMethod: 'POST',
       body: JSON.stringify({
@@ -124,7 +124,7 @@ describe('Retrieve interactions', function() {
         application: 'vLive'
       })
     });
-    
+
     response.statusCode.should.equal(200);
     response.headers['Content-Type'].should.equal('application/json');
     let counts = JSON.parse(response.body).counts;
