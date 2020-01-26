@@ -1,18 +1,46 @@
 'use strict';
-
+const moment = require('moment');
 const response = (statusCode, body, additionalHeaders) => ({
   statusCode,
-  body: body,
+  body: JSON.stringify(body),
   headers: { 'Content-Type': 'application/json', ...additionalHeaders },
 });
 
 const put = async (deps, event) => {
   try {
     const body = JSON.parse(event.body);
-    if(body && body.application && body.operation && body.currentMediaTime) {
-      return response(200, JSON.stringify({message:'Hello'}));
-    } else {
-      return response(400, JSON.stringify({message:'To record an interaction, you must include values for application, operation, and currentMediaTime.'}));
+    
+    if (event.headers && event.requestContext && body && body.application && body.operation && body.currentMediaTime) {
+      const time = new Date();
+
+      let ip = "NA";
+      if (event.requestContext && event.requestContext.identity && event.requestContext.identity.sourceIp) {
+        ip = event.requestContext.identity.sourceIp;
+      }
+
+      let referer = event.headers['Referer'] ? event.headers['Referer'] : "NA";
+      let userAgent = event.headers['User-Agent'] ? event.headers['User-Agent'] : "NA";
+
+      let params = {
+        TableName: 'interactions',
+        Item: {
+          application: body.application,
+          time: time.getTime(),
+          operation: body.operation,
+          currentMediaTime: body.currentMediaTime,
+          ip: ip,
+          referer: referer,
+          userAgent: userAgent,
+          date: moment(time).utc().format('YYYY-MM-DD')
+        }
+      };
+
+      await deps.docClient.put(params).promise();
+      
+      return response(201, { message: 'Created item', item: params.Item });
+    }
+    else {
+      return response(400, { message: 'To record an interaction, you must include values for application, operation, and currentMediaTime.' });
     }
   } catch(err) {
     throw err;

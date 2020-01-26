@@ -2,11 +2,24 @@
 
 const methods = require('../interactions.handler.js').methods;
 const chai = require('chai');
-const sinon = require('sinon');
+const timeout = ms => new Promise(res => setTimeout(res, ms));
 
 chai.should();
 
-const deps = {};
+const deps = {
+  docClient: {
+    put: () => {
+      return {
+        promise: () => {
+          return new Promise( async (resolve, reject) => {
+            await timeout(500);
+            resolve({});
+          });
+        }
+      };
+    }
+  }
+};
 
 const handler = methods(deps);
 
@@ -33,7 +46,31 @@ describe('Save an interaction', function() {
     });
     response.statusCode.should.equal(400);
   });
-  it('successfully puts an interaction in the database');
+  it('successfully puts an interaction in the database', async () => {
+    const response = await handler({
+      httpMethod: 'PUT',
+      requestContext: {
+        identity: {
+          sourceIp: '196.53.96.43'
+        }
+      },
+      headers: {
+        'User-Agent': 'PostmanRuntime/7.22.0'
+      },
+      body: JSON.stringify({
+      	application: 'vLive',
+      	operation: 'pause',
+      	currentMediaTime: 209
+      })
+    });
+    
+    response.statusCode.should.equal(201);
+    response.headers['Content-Type'].should.equal('application/json');
+    let item = JSON.parse(response.body).item;
+    item.ip.should.equal('196.53.96.43');
+    item.userAgent.should.equal('PostmanRuntime/7.22.0');
+    item.operation.should.equal('pause');
+  });
 });
 
 describe('Retrieve interactions', function() {

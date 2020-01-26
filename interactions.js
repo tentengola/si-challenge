@@ -2,6 +2,7 @@
 
 const methods = require('./interactions.handler.js').methods;
 const aws = require('aws-sdk');
-const deps = {};
+const docClient = new aws.DynamoDB.DocumentClient();
+const deps = {docClient};
 
 exports.handler = methods(deps);
