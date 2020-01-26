@@ -3,7 +3,7 @@ const moment = require('moment');
 const response = (statusCode, body, additionalHeaders) => ({
   statusCode,
   body: JSON.stringify(body),
-  headers: { 'Content-Type': 'application/json', ...additionalHeaders },
+  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'PUT, POST', ...additionalHeaders },
 });
 
 const put = async (deps, event) => {
