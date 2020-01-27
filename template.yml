@@ -4,7 +4,7 @@ Transform:
 - AWS::CodeStar
 
 Resources:
-  Post:
+  Interactions:
     Type: AWS::Serverless::Function
     Properties:
       Handler: interactions.handler
@@ -19,4 +19,15 @@ Resources:
           Type: Api
           Properties:
             Path: /interactions
+            Method: post
+  Login:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: login.handler
+      Runtime: nodejs10.x
+      Events:
+        PutEvent:
+          Type: Api
+          Properties:
+            Path: /login
             Method: post

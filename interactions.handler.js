@@ -37,7 +37,7 @@ const put = async(deps, event) => {
 
       await deps.docClient.put(params).promise();
 
-      return response(201, { message: 'Created item', item: params.Item });
+      return response(201, { message: 'Created item', id: { application: params.Item.application, time: params.Item.time } });
     }
     else {
       return response(400, { error: 'To record an interaction, you must include values for application, operation, and currentMediaTime.' });

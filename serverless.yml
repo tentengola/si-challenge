@@ -16,7 +16,45 @@ provider:
         - dynamodb:PutItem
       Resource: "*"
 
+plugins:
+  - serverless-aws-documentation
+
+custom:
+  # You must have the documentation object
+  documentation:
+    # this is general info about the API
+    api:
+      info:
+        version: '2'
+        title: Interactions API
+    models:
+      -
+        name: 400Response
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+      -
+        name: 500Response
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+
 functions:
+  authorize:
+    handler: auth.handler
+  login:
+    handler: login.handler
+    events:
+      - http:
+          path: login
+          method: post
+          cors: true
   interactions:
     handler: interactions.handler
     events:
@@ -24,10 +62,32 @@ functions:
           path: interactions
           method: put
           cors: true
+          authorizer: authorize
+          documentation:
+            methodResponses:
+                -
+                  statusCode: "400"
+                  responseModels:
+                    "application/json": "400Response"
+                -
+                  statusCode: "500"
+                  responseModels:
+                    "application/json": "500Response"
       - http:
           path: interactions
           method: post
           cors: true
+          authorizer: authorize
+          documentation:
+            methodResponses:
+                -
+                  statusCode: "400"
+                  responseModels:
+                    "application/json": "400Response"
+                -
+                  statusCode: "500"
+                  responseModels:
+                    "application/json": "500Response"
 
 resources:
   Resources:
