@@ -35,3 +35,7 @@ sls deploy
 ```
 
 This will upload the code in a zip and create all AWS resources. It also generate a directory that will contain your cloudformation templates called .serverless
+
+## Docs
+
+https://s3.amazonaws.com/s3.tantangula.com/index.html
