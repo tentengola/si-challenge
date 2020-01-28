@@ -37,6 +37,6 @@ This will upload the code in a zip and create all AWS resources. It also generat
 
 Once the API is running, you'll need to POST a JSON of any username and password to to retrieve the JWT you'll need to use the API.
 
-## Docs
+## Swagger UI
 
 https://s3.amazonaws.com/s3.tantangula.com/index.html
