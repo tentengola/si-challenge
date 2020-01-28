@@ -5,7 +5,7 @@
     "version": "2020-01-28T03:26:03Z",
     "title": "dev-interaction-service"
   },
-  "host": "okffq9xqb3.execute-api.us-east-1.amazonaws.com",
+  "host": "oqy83h9467.execute-api.us-east-1.amazonaws.com",
   "basePath": "/dev",
   "schemes": [
     "https"
