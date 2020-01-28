@@ -1,5 +1,13 @@
 # si-challenge
 
+## Working Endpoints
+
+POST - https://okffq9xqb3.execute-api.us-east-1.amazonaws.com/dev/login
+
+PUT - https://okffq9xqb3.execute-api.us-east-1.amazonaws.com/dev/interactions
+
+POST - https://okffq9xqb3.execute-api.us-east-1.amazonaws.com/dev/interactions
+  
 ## Run Tests
 
 To run tests...
