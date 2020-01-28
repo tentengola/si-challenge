@@ -190,6 +190,13 @@ functions:
                   statusCode: "401"
                   responseModels:
                     application/json: Unauthorized
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "*"
                 -
                   statusCode: "500"
                   responseModels:
@@ -242,6 +249,13 @@ functions:
                   statusCode: "401"
                   responseModels:
                     application/json: Unauthorized
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "*"
                 -
                   statusCode: "500"
                   responseModels:
@@ -256,6 +270,15 @@ functions:
 
 resources:
   Resources:
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
     InteractionsDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain

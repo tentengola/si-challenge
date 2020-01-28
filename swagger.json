@@ -1,0 +1,364 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "An API for saving and retrieving software interactions",
+    "version": "2020-01-28T03:26:03Z",
+    "title": "dev-interaction-service"
+  },
+  "host": "okffq9xqb3.execute-api.us-east-1.amazonaws.com",
+  "basePath": "/dev",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/interactions": {
+      "post": {
+        "summary": "retrieve interactions",
+        "description": "retrieves a daily count of every interaction of in a specific application within a date range",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JWT retrieved from successful login",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "RequestInteractionCount",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RequestInteractionCount"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/InteractionCountReceived"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "PUT, POST"
+              }
+            }
+          },
+          "400": {
+            "description": "400 response",
+            "schema": {
+              "$ref": "#/definitions/BadRequest"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "PUT, POST"
+              }
+            }
+          },
+          "401": {
+            "description": "401 response",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "*"
+              }
+            }
+          },
+          "500": {
+            "description": "500 response",
+            "schema": {
+              "$ref": "#/definitions/ServerError"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "PUT, POST"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "authorize": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "submit interaction",
+        "description": "records an interaction in the database",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "JWT retrieved from successful login",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "SubmitInteraction",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SubmitInteraction"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "201 response",
+            "schema": {
+              "$ref": "#/definitions/InteractionCreated"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "PUT, POST"
+              }
+            }
+          },
+          "400": {
+            "description": "400 response",
+            "schema": {
+              "$ref": "#/definitions/BadRequest"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "PUT, POST"
+              }
+            }
+          },
+          "401": {
+            "description": "401 response",
+            "schema": {
+              "$ref": "#/definitions/Unauthorized"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "*"
+              }
+            }
+          },
+          "500": {
+            "description": "500 response",
+            "schema": {
+              "$ref": "#/definitions/ServerError"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "PUT, POST"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "authorize": []
+          }
+        ]
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "login",
+        "description": "takes in a username and password and gives a JWT good for five minutes",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/TokenReceived"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string",
+                "description": "*"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string",
+                "description": "POST"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "authorize": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "x-amazon-apigateway-authtype": "custom"
+    }
+  },
+  "definitions": {
+    "BadRequest": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "SubmitInteraction": {
+      "type": "object",
+      "properties": {
+        "application": {
+          "type": "string"
+        },
+        "operation": {
+          "type": "string"
+        },
+        "currentMediaTime": {
+          "type": "number"
+        }
+      }
+    },
+    "InteractionCountReceived": {
+      "type": "object",
+      "properties": {
+        "counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "ServerError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "InteractionCreated": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "object",
+          "properties": {
+            "application": {
+              "type": "string"
+            },
+            "time": {
+              "type": "number"
+            }
+          }
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "TokenReceived": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "Unauthorized": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "Login": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "RequestInteractionCount": {
+      "type": "object",
+      "properties": {
+        "application": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
