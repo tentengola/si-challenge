@@ -50,7 +50,7 @@ const put = async(deps, event) => {
   }
 };
 
-//builds a search query and returns a daily count object
+//checks for necessary data, builds a search query, and returns a daily count object
 const post = async(deps, event) => {
   try {
     const body = JSON.parse(event.body);
