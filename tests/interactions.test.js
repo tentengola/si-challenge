@@ -35,7 +35,7 @@ const deps = {
 const handler = methods(deps);
 
 describe('Save an interaction', function() {
-  it('returns a response from enpoint', async() => {
+  it('returns a response from endpoint', async() => {
     const response = await handler({
       httpMethod: 'PUT'
     });
@@ -85,10 +85,8 @@ describe('Save an interaction', function() {
 
     response.statusCode.should.equal(201);
     response.headers['Content-Type'].should.equal('application/json');
-    let item = JSON.parse(response.body).item;
-    item.ip.should.equal('196.53.96.43');
-    item.userAgent.should.equal('PostmanRuntime/7.22.0');
-    item.operation.should.equal('pause');
+    let body = JSON.parse(response.body);
+    body.id.application.should.equal('vLive');
   });
 });
 

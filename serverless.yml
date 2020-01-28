@@ -20,25 +20,99 @@ plugins:
   - serverless-aws-documentation
 
 custom:
-  # You must have the documentation object
   documentation:
-    # this is general info about the API
     api:
       info:
-        version: '2'
+        version: 2
         title: Interactions API
+        description: An API for saving and retrieving software interactions
     models:
       -
-        name: 400Response
-        contentType: "application/json"
+        name: Login
+        contentType: application/json
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+            password:
+              type: string
+      -
+        name: TokenReceived
+        contentType: application/json
+        schema:
+          type: object
+          properties:
+            token:
+              type: string
+      -
+        name: SubmitInteraction
+        contentType: application/json
+        schema:
+          type: object
+          properties:
+            operation:
+              type: string
+            application:
+              type: string
+            currentMediaTime:
+              type: number
+      -
+        name: InteractionCreated
+        contentType: application/json
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            id:
+              type: object
+              properties:
+                application:
+                  type: string
+                time:
+                  type: number
+      -
+        name: RequestInteractionCount
+        contentType: application/json
+        schema:
+          type: object
+          properties:
+            startDate:
+              type: string
+            endDate:
+              type: string
+            application:
+              type: string
+      - 
+        name: InteractionCountReceived
+        contentType: application/json
+        schema:
+          type: object
+          properties:
+            counts:
+              type: object
+              additionalProperties:
+                type: number
+      -
+        name: BadRequest
+        contentType: application/json
         schema:
           type: object
           properties:
             error:
               type: string
       -
-        name: 500Response
-        contentType: "application/json"
+        name: Unauthorized
+        contentType: application/json
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+      -
+        name: ServerError
+        contentType: application/json
         schema:
           type: object
           properties:
@@ -55,6 +129,23 @@ functions:
           path: login
           method: post
           cors: true
+          documentation:
+            summary: login
+            description: takes in a username and password and gives a JWT good for five minutes
+            requestModels:
+              application/json: Login
+            methodResponses:
+                -
+                  statusCode: "200"
+                  responseModels:
+                    application/json: TokenReceived
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "POST"
   interactions:
     handler: interactions.handler
     events:
@@ -64,30 +155,104 @@ functions:
           cors: true
           authorizer: authorize
           documentation:
+            summary: submit interaction
+            description: records an interaction in the database
+            requestHeaders:
+            -
+              name: Authorization
+              description: JWT retrieved from successful login
+            requestModels:
+              application/json: SubmitInteraction
             methodResponses:
+                -
+                  statusCode: "201"
+                  responseModels:
+                    application/json: InteractionCreated
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "PUT, POST"
                 -
                   statusCode: "400"
                   responseModels:
-                    "application/json": "400Response"
+                    application/json: BadRequest
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "PUT, POST"
+                -
+                  statusCode: "401"
+                  responseModels:
+                    application/json: Unauthorized
                 -
                   statusCode: "500"
                   responseModels:
-                    "application/json": "500Response"
+                    application/json: ServerError
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "PUT, POST"
       - http:
           path: interactions
           method: post
           cors: true
           authorizer: authorize
           documentation:
+            summary: retrieve interactions
+            description: retrieves a daily count of every interaction of in a specific application within a date range
+            requestHeaders:
+            -
+              name: Authorization
+              description: JWT retrieved from successful login
+            requestModels:
+              application/json: RequestInteractionCount
             methodResponses:
+                -
+                  statusCode: "200"
+                  responseModels:
+                    application/json: InteractionCountReceived
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "PUT, POST"
                 -
                   statusCode: "400"
                   responseModels:
-                    "application/json": "400Response"
+                    application/json: BadRequest
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "PUT, POST"
+                -
+                  statusCode: "401"
+                  responseModels:
+                    application/json: Unauthorized
                 -
                   statusCode: "500"
                   responseModels:
-                    "application/json": "500Response"
+                    application/json: ServerError
+                  responseHeaders:
+                  -
+                    name: "Access-Control-Allow-Origin"
+                    description: "*"
+                  -
+                    name: "Access-Control-Allow-Methods"
+                    description: "PUT, POST"
 
 resources:
   Resources:
@@ -97,21 +262,21 @@ resources:
       Properties:
         AttributeDefinitions:
           -
-            AttributeName: "application"
-            AttributeType: "S"
+            AttributeName: application
+            AttributeType: S
           -
-            AttributeName: "time"
-            AttributeType: "N"
+            AttributeName: time
+            AttributeType: N
         KeySchema:
           -
-            AttributeName: "application"
-            KeyType: "HASH"
+            AttributeName: application
+            KeyType: HASH
           -
-            AttributeName: "time"
-            KeyType: "RANGE"
+            AttributeName: time
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         StreamSpecification:
-          StreamViewType: "NEW_IMAGE"
-        TableName: "interactions"
+          StreamViewType: NEW_IMAGE
+        TableName: interactions

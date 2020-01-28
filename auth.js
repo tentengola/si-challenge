@@ -1,4 +1,5 @@
 'use strict';
+
 const jwt = require('jsonwebtoken');
 
 exports.handler = (event, context, callback) => {

@@ -1,9 +1,10 @@
 'use strict';
+
 const jwt = require('jsonwebtoken');
 const response = (statusCode, body, additionalHeaders) => ({
   statusCode,
   body: JSON.stringify(body),
-  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET', ...additionalHeaders },
+  headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST', ...additionalHeaders },
 });
 
 exports.handler = (event, context, callback) => {

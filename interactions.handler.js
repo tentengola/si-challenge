@@ -1,4 +1,5 @@
 'use strict';
+
 const moment = require('moment');
 const response = (statusCode, body, additionalHeaders) => ({
   statusCode,
