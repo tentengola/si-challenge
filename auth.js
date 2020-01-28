@@ -2,6 +2,7 @@
 
 const jwt = require('jsonwebtoken');
 
+//verify JWT and build a policy to allow Lambda access
 exports.handler = (event, context, callback) => {
     let token = event.authorizationToken;
 
@@ -10,10 +11,12 @@ exports.handler = (event, context, callback) => {
             token = token.split(" ")[1];
         }
 
+        //in prod, the secret would be pulled into the code from AWS secret manager
         const decoded = jwt.verify(token, 'hiuh7f5cdfghytr');
 
         const user = decoded.user;
 
+        //this policy is wide open which I would also not normally do
         const policy = {
             principalId: user,
             policyDocument: {

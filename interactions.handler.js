@@ -7,10 +7,11 @@ const response = (statusCode, body, additionalHeaders) => ({
   headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'PUT, POST', ...additionalHeaders },
 });
 
+//checks for necessary data and creates dynamoDB put operation
 const put = async(deps, event) => {
   try {
     const body = JSON.parse(event.body);
-
+    
     if (event.headers && event.requestContext && body && body.application && body.operation && body.currentMediaTime) {
       const time = new Date();
 
@@ -49,10 +50,13 @@ const put = async(deps, event) => {
   }
 };
 
+//builds a search query and returns a daily count object
 const post = async(deps, event) => {
   try {
     const body = JSON.parse(event.body);
     if (body && body.startDate && body.endDate && body.application) {
+      
+      //creates between range for the dynamoDB query from the submitted dates 
       const startTime = new Date(body.startDate + 'T00:00:00-00:00').getTime();
       const endTime = new Date(body.endDate + 'T23:59:59-00:00').getTime();
 
@@ -71,6 +75,7 @@ const post = async(deps, event) => {
 
       const queryResponse = await deps.docClient.query(params).promise();
 
+      //this creates a counts object for the reponse that shows daily interactions
       const items = queryResponse.Items;
 
       let counts = {};
@@ -97,6 +102,7 @@ const post = async(deps, event) => {
   }
 };
 
+//switch to filter out request for methods that don't exist
 exports.methods = deps => async(event, context, callback) => {
   try {
     switch (event.httpMethod) {
